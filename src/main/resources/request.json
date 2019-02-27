@@ -1,0 +1,54 @@
+{
+    "collections": [
+        "jeg_JacobsEngineering"
+    ],
+    "fields": [
+        "DocumentType",
+        "AssemblyNumber",
+        "Batchname",
+        "DocumentDate_date",
+        "DocumentNumber",
+        "Filename",
+        "PartNumber",
+        "PONumber",
+        "WorkAuthorizationNumber"
+    ],
+    "filters": [
+        {
+            "field": "fpd_asset_type",
+            "operator": "AND",
+            "value": "MEMBER",
+            "clauses": []
+        },
+        {
+            "field": "PartNumber",
+            "operator": "AND",
+            "value": "SDG13102339",
+            "clauses": []
+        },
+        {
+            "field": "DocumentType",
+            "operator": "AND",
+            "value": "Drawing",
+            "clauses": [
+                {
+                    "field": "fpd_acl",
+                    "operator": "OR",
+                    "value": "cdisalesdemo@dsd"
+                },
+                {
+                    "field": "fpd_acl",
+                    "operator": "OR",
+                    "value": "everyone@dsd"
+                }
+            ]
+        }
+    ],
+    "parameters": {
+        "df": "digital_asset_content"
+    },
+    "queryField": "*",
+    "related": null,
+    "rows": 1000,
+    "start": "0"
+}

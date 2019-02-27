@@ -1,0 +1,24 @@
+{
+    "status": 0,
+    "message": null,
+    "responseTime": 0,
+    "queryTime": 8,
+    "found": 1,
+    "startAt": 0,
+    "documents": [
+        {
+            "collection": null,
+            "fields": {
+                "PONumber": "FAQVM6C48K",
+                "DocumentDate_date": "Sun Dec 11 18:00:00 CST 2016",
+                "Batchname": "Demo",
+                "PartNumber": "[515-700, 73X, M21143/1-5, MS21209C0415L, SDG13102339, SDG13102339-001, SDG13102339-301, SDG13102340, SDG13102341-001, SDG13102341-301, SDG13102501-001, SDG13102501-002, SDG13102501-003]",
+                "AssemblyNumber": "AA0002",
+                "DocumentType": "Drawing",
+                "Filename": "SDG13102339_REV NC",
+                "DocumentNumber": "SDG13102339",
+                "WorkAuthorizationNumber": "AMS5747"
+            }
+        }
+    ]
+}
