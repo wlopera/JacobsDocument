@@ -74,13 +74,19 @@
       // }
       // define each Node's appearance
       myDiagram.nodeTemplate =
-        $(go.Node, "Auto",  // the whole node panel
+        $(go.Node, "Horizontal",  // the whole node panel,
           // define the node's outer shape, which will surround the TextBlock
-          $(go.Shape, "Circle",
-            // { fill: "CornflowerYELLOW", stroke: "black", spot1: new go.Spot(0, 0, 5, 5), spot2: new go.Spot(1, 1, -5, -5) }),
+          $(go.Shape, "circle",
+          {
+            width: 15, height: 15,
+            portId: "",  // now the Shape is the port, not the whole Node
+            fromSpot: go.Spot.Center,  // port properties go on the port!
+            toSpot: go.Spot.Center
+          },
+            // { fill: "CornflowerCYAN", stroke: "black", spot1: new go.Spot(0, 0, 5, 5), spot2: new go.Spot(1, 1, -5, -5) }),
             new go.Binding("fill", "color")),
           $(go.TextBlock,
-            { font: "bold 10pt helvetica, bold arial, sans-serif", textAlign: "center", maxSize: new go.Size(100, NaN) },
+            { font: "bold 10pt helvetica, bold arial, sans-serif", textAlign: "center", maxSize: new go.Size(400, NaN) },
             new go.Binding("text", "text"))
         );
 
@@ -93,11 +99,11 @@
           $(go.Shape,  // the arrowhead
             { toArrow: "", stroke: null }),
           $(go.Panel, "Auto",
-            $(go.Shape,  // the label background, which becomes transparent around the edges
-              {
-                fill: $(go.Brush, "Radial", { 0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)" }),
-                stroke: null
-              }),
+            // $(go.Shape,  // the label background, which becomes transparent around the edges
+            //   {
+            //     fill: $(go.Brush, "Radial", { 0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)" }),
+            //     stroke: null
+            //   }),
             $(go.TextBlock,  // the label text
               {
                 textAlign: "center",
@@ -110,27 +116,28 @@
         );
       // create the model for the concept map
       // var nodeDataArray = [
-      //   { key: 1, text: "", color: "red"},
-      //   { key: 2, text: "", color: "YELLOW" },
-      //   { key: 3, text: "", color: "yellow" },
-      //   { key: 4, text: "", color: "gray" },
-      //   { key: 5, text: "", color: "cyan" },
-      //   { key: 6, text: "", color: "orange" }
-      // ];
-      // var linkDataArray = [
-      //   { from: 1, to: 2, text: "QARC20" },
-      //   { from: 2, to: 3, text: "Drawing" },
-      //   { from: 3, to: 4, text: "QARC10" },
-      //   { from: 4, to: 5, text: "Accept" },
-      //   { from: 5, to: 6, text: "Text10" },
-      //   { from: 6, to: 1, text: "Test20" },
-      //   { from: 6, to: 2, text: "Test30" },
-      //   { from: 6, to: 3, text: "Test40" },
-      //   { from: 6, to: 4, text: "Test50" }
-      // ];
-      var nodeDataArray = [{"key":"LAC479Q228","text":"QARC Reports: QARC Report_SDG13102339-301_SN 1043","color":"YELLOW"},{"key":"LIA3AMNLG3","text":"QARC Reports: QARC Report_SDG13102340-301_SN 1052","color":"YELLOW"},{"key":"2BZKF428ZM","text":"QARC Reports: QARC Report_SEG13102314-303_SN 1005","color":"YELLOW"},{"key":"AR4IQBABOI","text":"QARC Reports: QARC Report_SEG13102337-302_SN 1015","color":"YELLOW"},{"key":"0001548872","text":"Acceptance Data Package: ADP - Form J096_Gold Sheet","color":"RED"},{"key":"FAQVM6C48K","text":"Drawing: SDG13102339_REV NC","color":"YELLOW"},{"key":"M5SZ5V7YT7","text":"Drawing: SDG13102338_REV A","color":"YELLOW"},{"key":"K562D9MNZF","text":"Pos: EF70099FDB_SLG13102332-001_LN 170110","color":"YELLOW"},{"key":"7T3XJIB9HX","text":"Drawing: SDG32108325_REV AL","color":"YELLOW"},{"key":"O4GHPW0K4XT3","text":"Drawing: SEG13102337_REV C","color":"YELLOW"},{"key":"PZSD2YU7I9K","text":"Drawing: SEG13102314_Rev C","color":"YELLOW"},{"key":"UIO9BMJ34P0","text":"Drawing: SEG13102314_Rev C_DCN 2","color":"YELLOW"}];
+      //    { key: 1, text: "QARC20 QARC20 QARC20 QARC20 QARC20 QARC20 QARC20", color: "red"},
+      //    { key: 2, text: "", color: "CYAN" },
+      //    { key: 3, text: "", color: "CYAN" },
+      //    { key: 4, text: "", color: "gray" },
+      //    { key: 5, text: "", color: "cyan" },
+      //    { key: 6, text: "", color: "orange" }
+      //  ];
+      //  var linkDataArray = [
+      //    { from: 1, to: 2, text: "QARC20" },
+      //    { from: 2, to: 3, text: "Drawing" },
+      //    { from: 3, to: 4, text: "QARC10" },
+      //    { from: 4, to: 5, text: "Accept" },
+      //    { from: 5, to: 6, text: "Text10" },
+      //    { from: 6, to: 1, text: "Test20" },
+      //    { from: 6, to: 2, text: "Test30" },
+      //    { from: 6, to: 3, text: "Test40" },
+      //    { from: 6, to: 4, text: "Test50" }
+      //  ];
 
-      var linkDataArray = [{"from":"0001548872","to":"2BZKF428ZM","text":"15"},{"from":"2BZKF428ZM","to":"O4GHPW0K4XT3","text":"5"},{"from":"AR4IQBABOI","to":"FAQVM6C48K","text":"9"},{"from":"AR4IQBABOI","to":"O4GHPW0K4XT3","text":"13"},{"from":"AR4IQBABOI","to":"LAC479Q228","text":"7"},{"from":"2BZKF428ZM","to":"LIA3AMNLG3","text":"2"},{"from":"AR4IQBABOI","to":"7T3XJIB9HX","text":"12"},{"from":"2BZKF428ZM","to":"7T3XJIB9HX","text":"4"},{"from":"AR4IQBABOI","to":"LIA3AMNLG3","text":"8"},{"from":"0001548872","to":"AR4IQBABOI","text":"16"},{"from":"2BZKF428ZM","to":"AR4IQBABOI","text":"3"},{"from":"AR4IQBABOI","to":"M5SZ5V7YT7","text":"10"},{"from":"AR4IQBABOI","to":"PZSD2YU7I9K","text":"14"},{"from":"2BZKF428ZM","to":"PZSD2YU7I9K","text":"6"},{"from":"2BZKF428ZM","to":"LAC479Q228","text":"1"},{"from":"0001548872","to":"PZSD2YU7I9K","text":"17"},{"from":"AR4IQBABOI","to":"K562D9MNZF","text":"11"},{"from":"PZSD2YU7I9K","to":"UIO9BMJ34P0","text":"18"}];
+      var nodeDataArray = [{"key":"LAC479Q228","text":"QARC Reports: QARC Report_SDG13102339-301_SN 1043","color":"CYAN"},{"key":"LIA3AMNLG3","text":"QARC Reports: QARC Report_SDG13102340-301_SN 1052","color":"CYAN"},{"key":"2BZKF428ZM","text":"QARC Reports: QARC Report_SEG13102314-303_SN 1005","color":"CYAN"},{"key":"AR4IQBABOI","text":"QARC Reports: QARC Report_SEG13102337-302_SN 1015","color":"CYAN"},{"key":"0001548872","text":"Acceptance Data Package: ADP - Form J096_Gold Sheet","color":"RED"},{"key":"FAQVM6C48K","text":"Drawing: SDG13102339_REV NC","color":"CYAN"},{"key":"M5SZ5V7YT7","text":"Drawing: SDG13102338_REV A","color":"CYAN"},{"key":"K562D9MNZF","text":"Pos: EF70099FDB_SLG13102332-001_LN 170110","color":"CYAN"},{"key":"7T3XJIB9HX","text":"Drawing: SDG32108325_REV AL","color":"CYAN"},{"key":"O4GHPW0K4XT3","text":"Drawing: SEG13102337_REV C","color":"CYAN"},{"key":"PZSD2YU7I9K","text":"Drawing: SEG13102314_Rev C","color":"CYAN"},{"key":"UIO9BMJ34P0","text":"Drawing: SEG13102314_Rev C_DCN 2","color":"CYAN"}];
+
+      var linkDataArray = [{"from":"0001548872","to":"2BZKF428ZM","text":""},{"from":"2BZKF428ZM","to":"O4GHPW0K4XT3","text":""},{"from":"AR4IQBABOI","to":"FAQVM6C48K","text":""},{"from":"AR4IQBABOI","to":"O4GHPW0K4XT3","text":""},{"from":"AR4IQBABOI","to":"LAC479Q228","text":""},{"from":"2BZKF428ZM","to":"LIA3AMNLG3","text":""},{"from":"AR4IQBABOI","to":"7T3XJIB9HX","text":""},{"from":"2BZKF428ZM","to":"7T3XJIB9HX","text":""},{"from":"AR4IQBABOI","to":"LIA3AMNLG3","text":""},{"from":"0001548872","to":"AR4IQBABOI","text":""},{"from":"2BZKF428ZM","to":"AR4IQBABOI","text":""},{"from":"AR4IQBABOI","to":"M5SZ5V7YT7","text":""},{"from":"AR4IQBABOI","to":"PZSD2YU7I9K","text":""},{"from":"2BZKF428ZM","to":"PZSD2YU7I9K","text":""},{"from":"2BZKF428ZM","to":"LAC479Q228","text":""},{"from":"0001548872","to":"PZSD2YU7I9K","text":""},{"from":"AR4IQBABOI","to":"K562D9MNZF","text":""},{"from":"PZSD2YU7I9K","to":"UIO9BMJ34P0","text":""}];
       
       myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
     }

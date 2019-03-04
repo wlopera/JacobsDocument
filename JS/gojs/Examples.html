@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive Force Directed Layout</title>
+  <meta name="description"
+    content="A continuously operating ForceDirectedLayout lets the user push and pull nodes around." />
+  <!-- Copyright 1998-2019 by Northwoods Software Corporation. -->
+  <meta charset="UTF-8">
+  <script src="go.js"></script>
+  <script id="code">
+function init() {
+    if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
+    var $ = go.GraphObject.make;  // for conciseness in defining templates
+
+    myDiagram =
+      $(go.Diagram, "myDiagramDiv",  // must name or refer to the DIV HTML element
+        {
+          initialAutoScale: go.Diagram.Uniform,  // an initial automatic zoom-to-fit
+          contentAlignment: go.Spot.Center,  // align document to the center of the viewport
+          layout:
+            $(go.ForceDirectedLayout,  // automatically spread nodes apart
+              { maxIterations: 200, defaultSpringLength: 30, defaultElectricalCharge: 100 })
+        });
+
+    // define each Node's appearance
+    myDiagram.nodeTemplate =
+      $(go.Node, "Auto",  // the whole node panel
+        { locationSpot: go.Spot.Center },
+        // define the node's outer shape, which will surround the TextBlock
+        $(go.Shape, "Rectangle",
+          //{ fill: $(go.Brush, "Linear", { 0: "rgb(254, 201, 0)", 1: "rgb(254, 162, 0)" }), stroke: "black" }),
+          new go.Binding("fill", "color")),
+        $(go.TextBlock,
+          { font: "bold 10pt helvetica, bold arial, sans-serif", margin: 4 },
+          new go.Binding("text", "text"))
+      );
+
+    // replace the default Link template in the linkTemplateMap
+    myDiagram.nodeTemplate =
+    $(go.Node, "Horizontal",
+      $(go.Shape, "circle",
+        { 
+          width: 25, height: 25,
+          portId: "",  // now the Shape is the port, not the whole Node
+          fromSpot: go.Spot.Center,  // port properties go on the port!
+          toSpot: go.Spot.Center,
+        },
+        new go.Binding("fill", "color")
+        ),
+      $(go.TextBlock,
+        { font: "20px sans-serif" },
+        new go.Binding("text", "text"))
+    );
+
+  // var nodeDataArray = [
+  //   { key: "Alpha" },
+  //   { key: "Beta" }
+  // ];
+  // var linkDataArray = [
+  //   { from: "Alpha", to: "Beta" }
+  // ];
+
+  var nodeDataArray = [{"key":"LAC479Q228","text":"QARC Reports: QARC Report_SDG13102339-301_SN 1043","color":"CYAN"},{"key":"LIA3AMNLG3","text":"QARC Reports: QARC Report_SDG13102340-301_SN 1052","color":"CYAN"},{"key":"2BZKF428ZM","text":"QARC Reports: QARC Report_SEG13102314-303_SN 1005","color":"CYAN"},{"key":"AR4IQBABOI","text":"QARC Reports: QARC Report_SEG13102337-302_SN 1015","color":"CYAN"},{"key":"0001548872","text":"Acceptance Data Package: ADP - Form J096_Gold Sheet","color":"RED"},{"key":"FAQVM6C48K","text":"Drawing: SDG13102339_REV NC","color":"CYAN"},{"key":"M5SZ5V7YT7","text":"Drawing: SDG13102338_REV A","color":"CYAN"},{"key":"K562D9MNZF","text":"Pos: EF70099FDB_SLG13102332-001_LN 170110","color":"CYAN"},{"key":"7T3XJIB9HX","text":"Drawing: SDG32108325_REV AL","color":"CYAN"},{"key":"O4GHPW0K4XT3","text":"Drawing: SEG13102337_REV C","color":"CYAN"},{"key":"PZSD2YU7I9K","text":"Drawing: SEG13102314_Rev C","color":"CYAN"},{"key":"UIO9BMJ34P0","text":"Drawing: SEG13102314_Rev C_DCN 2","color":"CYAN"}];
+
+  var linkDataArray = [{"from":"0001548872","to":"2BZKF428ZM","text":""},{"from":"2BZKF428ZM","to":"O4GHPW0K4XT3","text":""},{"from":"AR4IQBABOI","to":"FAQVM6C48K","text":""},{"from":"AR4IQBABOI","to":"O4GHPW0K4XT3","text":""},{"from":"AR4IQBABOI","to":"LAC479Q228","text":""},{"from":"2BZKF428ZM","to":"LIA3AMNLG3","text":""},{"from":"AR4IQBABOI","to":"7T3XJIB9HX","text":""},{"from":"2BZKF428ZM","to":"7T3XJIB9HX","text":""},{"from":"AR4IQBABOI","to":"LIA3AMNLG3","text":""},{"from":"0001548872","to":"AR4IQBABOI","text":""},{"from":"2BZKF428ZM","to":"AR4IQBABOI","text":""},{"from":"AR4IQBABOI","to":"M5SZ5V7YT7","text":""},{"from":"AR4IQBABOI","to":"PZSD2YU7I9K","text":""},{"from":"2BZKF428ZM","to":"PZSD2YU7I9K","text":""},{"from":"2BZKF428ZM","to":"LAC479Q228","text":""},{"from":"0001548872","to":"PZSD2YU7I9K","text":""},{"from":"AR4IQBABOI","to":"K562D9MNZF","text":""},{"from":"PZSD2YU7I9K","to":"UIO9BMJ34P0","text":""}];
+
+    myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
+  }
+
+
+</script>
+</head>
+
+<body onload="init()">
+  <div id="sample">
+    <div id="myDiagramDiv" style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 650px">
+    </div>
+    <p>
+      As you drag a node around, the custom <a>ForceDirectedLayout</a> operates continuously, causing other nodes to be
+      pushed
+      aside or pulled along.
+    </p>
+  </div>
+</body>
+
+</html>

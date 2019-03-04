@@ -223,7 +223,8 @@ public class JacobsController {
 //									+ documentFinal.getFields().getFilename());
 
 //							map.put(keyInitial, documentFinal.getFields().getFilename());
-							map.put(keyInitial, ""+ii++);
+//							map.put(keyInitial, ""+ii++);
+							map.put(keyInitial, "");
 
 						}
 					}
