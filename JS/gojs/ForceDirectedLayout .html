@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive Force Directed Layout</title>
+  <meta name="description"
+    content="A continuously operating ForceDirectedLayout lets the user push and pull nodes around." />
+  <!-- Copyright 1998-2019 by Northwoods Software Corporation. -->
+  <meta charset="UTF-8">
+  <script src="go.js"></script>
+  <script id="code">
+    // This variation on ForceDirectedLayout does not move any selected Nodes
+    // but does move all other nodes (vertexes).
+    function ContinuousForceDirectedLayout() {
+      go.ForceDirectedLayout.call(this);
+      this._isObserving = false;
+    }
+    go.Diagram.inherit(ContinuousForceDirectedLayout, go.ForceDirectedLayout);
+    ContinuousForceDirectedLayout.prototype.isFixed = function (v) {
+      return v.node.isSelected;
+    }
+    // optimization: reuse the ForceDirectedNetwork rather than re-create it each time
+    ContinuousForceDirectedLayout.prototype.doLayout = function (coll) {
+      if (!this._isObserving) {
+        this._isObserving = true;
+        // cacheing the network means we need to recreate it if nodes or links have been added or removed or relinked,
+        // so we need to track structural model changes to discard the saved network.
+        var lay = this;
+        this.diagram.addModelChangedListener(function (e) {
+          // modelChanges include a few cases that we don't actually care about, such as
+          // "nodeCategory" or "linkToPortId", but we'll go ahead and recreate the network anyway.
+          // Also clear the network when replacing the model.
+          if (e.modelChange !== "" ||
+            (e.change === go.ChangedEvent.Transaction && e.propertyName === "StartingFirstTransaction")) {
+            lay.network = null;
+          }
+        });
+      }
+      var net = this.network;
+      if (net === null) {  // the first time, just create the network as normal
+        this.network = net = this.makeNetwork(coll);
+      } else {  // but on reuse we need to update the LayoutVertex.bounds for selected nodes
+        this.diagram.nodes.each(function (n) {
+          var v = net.findVertex(n);
+          if (v !== null) v.bounds = n.actualBounds;
+        });
+      }
+      // now perform the normal layout
+      go.ForceDirectedLayout.prototype.doLayout.call(this, coll);
+      // doLayout normally discards the LayoutNetwork by setting Layout.network to null;
+      // here we remember it for next time
+      this.network = net;
+    }
+    // end ContinuousForceDirectedLayout
+    function init() {
+      //if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
+      var $ = go.GraphObject.make;  // for conciseness in defining templates
+      myDiagram =
+        $(go.Diagram, "myDiagramDiv",  // must name or refer to the DIV HTML element
+          {
+            initialAutoScale: go.Diagram.Uniform,  // an initial automatic zoom-to-fit
+            contentAlignment: go.Spot.Center,  // align document to the center of the viewport
+            layout:
+              $(ContinuousForceDirectedLayout,  // automatically spread nodes apart while dragging
+                { defaultSpringLength: 30, defaultElectricalCharge: 100 }),
+            // do an extra layout at the end of a move
+            "SelectionMoved": function (e) { e.diagram.layout.invalidateLayout(); }
+          });
+      // dragging a node invalidates the Diagram.layout, causing a layout during the drag
+      // myDiagram.toolManager.draggingTool.doMouseMove = function() {
+      //   go.DraggingTool.prototype.doMouseMove.call(this);
+      //   if (this.isActive) { this.diagram.layout.invalidateLayout(); }
+      // }
+      // define each Node's appearance
+      myDiagram.nodeTemplate =
+        $(go.Node, "Horizontal",  // the whole node panel,
+          // define the node's outer shape, which will surround the TextBlock
+          $(go.Shape, "circle",
+          {
+            width: 15, height: 15,
+            portId: "",  // now the Shape is the port, not the whole Node
+            fromSpot: go.Spot.Center,  // port properties go on the port!
+            toSpot: go.Spot.Center
+          },
+            // { fill: "CornflowerCYAN", stroke: "black", spot1: new go.Spot(0, 0, 5, 5), spot2: new go.Spot(1, 1, -5, -5) }),
+            new go.Binding("fill", "color")),
+          $(go.TextBlock,
+            { font: "bold 10pt helvetica, bold arial, sans-serif", textAlign: "center", maxSize: new go.Size(400, NaN) },
+            new go.Binding("text", "text"))
+        );
+
+      // the rest of this app is the same as samples/conceptMap.html
+      // replace the default Link template in the linkTemplateMap
+      myDiagram.linkTemplate =
+        $(go.Link,  // the whole link panel
+          $(go.Shape,  // the link shape
+            { stroke: "black" }),
+          $(go.Shape,  // the arrowhead
+            { toArrow: "", stroke: null }),
+          $(go.Panel, "Auto",
+            // $(go.Shape,  // the label background, which becomes transparent around the edges
+            //   {
+            //     fill: $(go.Brush, "Radial", { 0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)" }),
+            //     stroke: null
+            //   }),
+            $(go.TextBlock,  // the label text
+              {
+                textAlign: "center",
+                font: "10pt helvetica, arial, sans-serif",
+                stroke: "Black",
+                margin: 4
+              },
+              new go.Binding("text", "text"))
+          )
+        );
+      // create the model for the concept map
+      // var nodeDataArray = [
+      //    { key: 1, text: "QARC20 QARC20 QARC20 QARC20 QARC20 QARC20 QARC20", color: "red"},
+      //    { key: 2, text: "", color: "CYAN" },
+      //    { key: 3, text: "", color: "CYAN" },
+      //    { key: 4, text: "", color: "gray" },
+      //    { key: 5, text: "", color: "cyan" },
+      //    { key: 6, text: "", color: "orange" }
+      //  ];
+      //  var linkDataArray = [
+      //    { from: 1, to: 2, text: "QARC20" },
+      //    { from: 2, to: 3, text: "Drawing" },
+      //    { from: 3, to: 4, text: "QARC10" },
+      //    { from: 4, to: 5, text: "Accept" },
+      //    { from: 5, to: 6, text: "Text10" },
+      //    { from: 6, to: 1, text: "Test20" },
+      //    { from: 6, to: 2, text: "Test30" },
+      //    { from: 6, to: 3, text: "Test40" },
+      //    { from: 6, to: 4, text: "Test50" }
+      //  ];
+
+      var nodeDataArray = [{"key":"LAC479Q228","text":"QARC Reports: QARC Report_SDG13102339-301_SN 1043","color":"CYAN"},{"key":"LIA3AMNLG3","text":"QARC Reports: QARC Report_SDG13102340-301_SN 1052","color":"CYAN"},{"key":"2BZKF428ZM","text":"QARC Reports: QARC Report_SEG13102314-303_SN 1005","color":"CYAN"},{"key":"AR4IQBABOI","text":"QARC Reports: QARC Report_SEG13102337-302_SN 1015","color":"CYAN"},{"key":"0001548872","text":"Acceptance Data Package: ADP - Form J096_Gold Sheet","color":"RED"},{"key":"FAQVM6C48K","text":"Drawing: SDG13102339_REV NC","color":"CYAN"},{"key":"M5SZ5V7YT7","text":"Drawing: SDG13102338_REV A","color":"CYAN"},{"key":"K562D9MNZF","text":"Pos: EF70099FDB_SLG13102332-001_LN 170110","color":"CYAN"},{"key":"7T3XJIB9HX","text":"Drawing: SDG32108325_REV AL","color":"CYAN"},{"key":"O4GHPW0K4XT3","text":"Drawing: SEG13102337_REV C","color":"CYAN"},{"key":"PZSD2YU7I9K","text":"Drawing: SEG13102314_Rev C","color":"CYAN"},{"key":"UIO9BMJ34P0","text":"Drawing: SEG13102314_Rev C_DCN 2","color":"CYAN"}];
+
+      var linkDataArray = [{"from":"0001548872","to":"2BZKF428ZM","text":""},{"from":"2BZKF428ZM","to":"O4GHPW0K4XT3","text":""},{"from":"AR4IQBABOI","to":"FAQVM6C48K","text":""},{"from":"AR4IQBABOI","to":"O4GHPW0K4XT3","text":""},{"from":"AR4IQBABOI","to":"LAC479Q228","text":""},{"from":"2BZKF428ZM","to":"LIA3AMNLG3","text":""},{"from":"AR4IQBABOI","to":"7T3XJIB9HX","text":""},{"from":"2BZKF428ZM","to":"7T3XJIB9HX","text":""},{"from":"AR4IQBABOI","to":"LIA3AMNLG3","text":""},{"from":"0001548872","to":"AR4IQBABOI","text":""},{"from":"2BZKF428ZM","to":"AR4IQBABOI","text":""},{"from":"AR4IQBABOI","to":"M5SZ5V7YT7","text":""},{"from":"AR4IQBABOI","to":"PZSD2YU7I9K","text":""},{"from":"2BZKF428ZM","to":"PZSD2YU7I9K","text":""},{"from":"2BZKF428ZM","to":"LAC479Q228","text":""},{"from":"0001548872","to":"PZSD2YU7I9K","text":""},{"from":"AR4IQBABOI","to":"K562D9MNZF","text":""},{"from":"PZSD2YU7I9K","to":"UIO9BMJ34P0","text":""}];
+      
+      myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
+    }
+    function reload() {
+      //myDiagram.layout.network = null;
+      var text = myDiagram.model.toJson();
+      myDiagram.model = go.Model.fromJson(text);
+      //myDiagram.layout =
+      //  go.GraphObject.make(ContinuousForceDirectedLayout,  // automatically spread nodes apart while dragging
+      //    { defaultSpringLength: 30, defaultElectricalCharge: 100 });
+    }
+  </script>
+</head>
+
+<body onload="init()">
+  <div id="sample">
+    <div id="myDiagramDiv" style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 650px">
+    </div>
+    <p>
+      As you drag a node around, the custom <a>ForceDirectedLayout</a> operates continuously, causing other nodes to be
+      pushed
+      aside or pulled along.
+    </p>
+  </div>
+</body>
+
+</html>
