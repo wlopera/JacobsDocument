@@ -29,11 +29,6 @@ public class JacobsController {
 	@Autowired
 	protected RestTemplate restTemplate;
 
-	// http://localhost:8585//postDocument
-	// http://209.249.189.32:9005/swagger-ui.html#/search-controller/searchUsingPOST
-
-	// http://localhost:1111/postDocument
-
 	@RequestMapping(value = "/postDocument", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Object postGanador(@RequestBody Request request) {
@@ -62,6 +57,7 @@ public class JacobsController {
 			// Prueba de modificar filter PartNumber
 			modifyPartNumber(newRequest, response);
 
+			// CONSULTA SERVICIO DOCUMENTOS
 			object = searchDocument(newRequest);
 
 			System.out.println("##==> newRequest: " + newRequest);
@@ -88,22 +84,8 @@ public class JacobsController {
 			System.out.println("##==> jsonlinks size: " + links.size());
 			System.out.println("##==> jsonlinks: " + jsonLinks);
 
-			Iterator<Node> it = nodes.iterator();
-			Node node = null;
-			while (it.hasNext()) {
-				node = it.next();
-				boolean exist = false;
-				for (Link link : links) {
-					if (node.getKey().equals(link.getFrom()) || node.getKey().equals(link.getTo())) {
-						exist = true;
-					}
-				}
-				if (!exist) {
-					it.remove();
-				}
-
-			}
-
+			// Filtrar los nodos
+			filterNodes(nodes, links);
 			jsonNodes = conversorObjectToJson(nodes);
 			System.out.println("##==> jsonNodesFinal: " + jsonNodes);
 
@@ -117,6 +99,30 @@ public class JacobsController {
 
 		return null;
 
+	}
+	
+	/**
+	 * Permite filtar los nodos 
+	 * 
+	 * @param nodes
+	 * @param links
+	 */
+	private void filterNodes(List<Node> nodes, List<Link> links) {
+		Iterator<Node> it = nodes.iterator();
+		Node node = null;
+		while (it.hasNext()) {
+			node = it.next();
+			boolean exist = false;
+			for (Link link : links) {
+				if (node.getKey().equals(link.getFrom()) || node.getKey().equals(link.getTo())) {
+					exist = true;
+				}
+			}
+			if (!exist) {
+				it.remove();
+			}
+
+		}
 	}
 
 	/**
@@ -140,7 +146,7 @@ public class JacobsController {
 						&& "[SEG13102314-303]".equals(document.getFields().getPartNumber().toString())) {
 					node.setColor("RED");
 				} else {
-					node.setColor("YELLOW");
+					node.setColor("CYAN");
 				}
 
 				nodes.add(node);
@@ -200,15 +206,9 @@ public class JacobsController {
 		}
 
 		System.out.println("Tamaño lista final: newList: "+ newList.size());
-		int ii =1;
-		
+	
 		for (Document documentInitial : newList) {
 			for (Document documentFinal : documents) {
-				//System.out.println(documentInitial.getFields().getFilename() +" ---- " + documentFinal.getFields().getFilename() );
-				
-				if(null != documentFinal.getFields().getFilename() && documentFinal.getFields().getFilename().equals("ADP - Form J096_Gold Sheet")) {
-					System.out.println("procesar");
-				}
 				if (null != documentInitial.getFields().getFilename() && null != documentFinal.getFields().getFilename()
 						&& (!documentInitial.getFields().getPONumber()
 								.equals(documentFinal.getFields().getPONumber()))) {
@@ -223,7 +223,6 @@ public class JacobsController {
 //									+ documentFinal.getFields().getFilename());
 
 //							map.put(keyInitial, documentFinal.getFields().getFilename());
-//							map.put(keyInitial, ""+ii++);
 							map.put(keyInitial, "");
 
 						}

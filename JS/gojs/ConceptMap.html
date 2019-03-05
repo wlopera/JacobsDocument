@@ -74,21 +74,7 @@ function init() {
     //   { key: 3, text: "Context Dependent" },
     //   { key: 4, text: "Concepts" },
     //   { key: 5, text: "Propositions" },
-    //   { key: 6, text: "Associated Feelings or Affect" },
-    //   { key: 7, text: "Perceived Regularities" },
-    //   { key: 8, text: "Labeled" },
-    //   { key: 9, text: "Hierarchically Structured" },
-    //   { key: 10, text: "Effective Teaching" },
-    //   { key: 11, text: "Crosslinks" },
-    //   { key: 12, text: "Effective Learning" },
-    //   { key: 13, text: "Events (Happenings)" },
-    //   { key: 14, text: "Objects (Things)" },
-    //   { key: 15, text: "Symbols" },
-    //   { key: 16, text: "Words" },
-    //   { key: 17, text: "Creativity" },
-    //   { key: 18, text: "Interrelationships" },
-    //   { key: 19, text: "Infants" },
-    //   { key: 20, text: "Different Map Segments" }
+    //   { key: 6, text: "Associated Feelings or Affect" }
     // ];
     // var linkDataArray = [
     //   { from: 1, to: 2, text: "represent" },
@@ -96,28 +82,11 @@ function init() {
     //   { from: 2, to: 4, text: "is" },
     //   { from: 2, to: 5, text: "is" },
     //   { from: 2, to: 6, text: "includes" },
-    //   { from: 2, to: 10, text: "necessary\nfor" },
-    //   { from: 2, to: 12, text: "necessary\nfor" },
     //   { from: 4, to: 5, text: "combine\nto form" },
-    //   { from: 4, to: 6, text: "include" },
-    //   { from: 4, to: 7, text: "are" },
-    //   { from: 4, to: 8, text: "are" },
-    //   { from: 4, to: 9, text: "are" },
-    //   { from: 5, to: 9, text: "are" },
-    //   { from: 5, to: 11, text: "may be" },
-    //   { from: 7, to: 13, text: "in" },
-    //   { from: 7, to: 14, text: "in" },
-    //   { from: 7, to: 19, text: "begin\nwith" },
-    //   { from: 8, to: 15, text: "with" },
-    //   { from: 8, to: 16, text: "with" },
-    //   { from: 9, to: 17, text: "aids" },
-    //   { from: 11, to: 18, text: "show" },
-    //   { from: 12, to: 19, text: "begins\nwith" },
-    //   { from: 17, to: 18, text: "needed\nto see" },
-    //   { from: 18, to: 20, text: "between" }
+    //   { from: 4, to: 6, text: "include" }
     // ];
 
-    var nodeDataArray = [{"key":"LAC479Q228","text":"QARC Reports: QARC Report_SDG13102339-301_SN 1043","color":"CYAN"},{"key":"LIA3AMNLG3","text":"QARC Reports: QARC Report_SDG13102340-301_SN 1052","color":"CYAN"},{"key":"2BZKF428ZM","text":"QARC Reports: QARC Report_SEG13102314-303_SN 1005","color":"CYAN"},{"key":"AR4IQBABOI","text":"QARC Reports: QARC Report_SEG13102337-302_SN 1015","color":"CYAN"},{"key":"0001548872","text":"Acceptance Data Package: ADP - Form J096_Gold Sheet","color":"RED"},{"key":"FAQVM6C48K","text":"Drawing: SDG13102339_REV NC","color":"CYAN"},{"key":"M5SZ5V7YT7","text":"Drawing: SDG13102338_REV A","color":"CYAN"},{"key":"K562D9MNZF","text":"Pos: EF70099FDB_SLG13102332-001_LN 170110","color":"CYAN"},{"key":"7T3XJIB9HX","text":"Drawing: SDG32108325_REV AL","color":"CYAN"},{"key":"O4GHPW0K4XT3","text":"Drawing: SEG13102337_REV C","color":"CYAN"},{"key":"PZSD2YU7I9K","text":"Drawing: SEG13102314_Rev C","color":"CYAN"},{"key":"UIO9BMJ34P0","text":"Drawing: SEG13102314_Rev C_DCN 2","color":"CYAN"}];
+    var nodeDataArray = [{"key":"LAC479Q228","text":"QARC Reports: QARC Report_SDG13102339-301_SN 1043","color":"CYAN"},{"key":"LIA3AMNLG3","text":"QARC Reports: QARC Report_SDG13102340-301_SN 1052","color":"CYAN"},{"key":"2BZKF428ZM","text":"QARC Reports: QARC Report_SEG13102314-303_SN 1005","color":"CYAN"},{"key":"AR4IQBABOI","text":"QARC Reports: QARC Report_SEG13102337-302_SN 1015","color":"CYAN"},{"key":"0001548872","text":"Acceptance Data Package: ADP - Form J096_Gold Sheet","color":"RED"},{"key":"FAQVM6C48K","text":"Drawing: SDG13102339_REV NC","color":"CYAN"},{"key":"M5SZ5V7YT7","text":"Drawing: SDG13102338_REV A","color":"CYAN"},{"key":"K562D9MNZF","text":"Pos: EF70099FDB_SLG13102332-001_LN 170110","color":"CYAN"},{"key":"7T3XJIB9HX","text":"Drawing: SDG32108325_REV AL","color":"CYAN"},{"key":"PZSD2YU7I9K","text":"Drawing: SEG13102314_Rev C","color":"CYAN"},{"key":"O4GHPW0K4XT3","text":"Drawing: SEG13102337_REV C","color":"CYAN"},{"key":"UIO9BMJ34P0","text":"Drawing: SEG13102314_Rev C_DCN 2","color":"CYAN"}];
 
     var linkDataArray = [{"from":"0001548872","to":"2BZKF428ZM","text":""},{"from":"2BZKF428ZM","to":"O4GHPW0K4XT3","text":""},{"from":"AR4IQBABOI","to":"FAQVM6C48K","text":""},{"from":"AR4IQBABOI","to":"O4GHPW0K4XT3","text":""},{"from":"AR4IQBABOI","to":"LAC479Q228","text":""},{"from":"2BZKF428ZM","to":"LIA3AMNLG3","text":""},{"from":"AR4IQBABOI","to":"7T3XJIB9HX","text":""},{"from":"2BZKF428ZM","to":"7T3XJIB9HX","text":""},{"from":"AR4IQBABOI","to":"LIA3AMNLG3","text":""},{"from":"0001548872","to":"AR4IQBABOI","text":""},{"from":"2BZKF428ZM","to":"AR4IQBABOI","text":""},{"from":"AR4IQBABOI","to":"M5SZ5V7YT7","text":""},{"from":"AR4IQBABOI","to":"PZSD2YU7I9K","text":""},{"from":"2BZKF428ZM","to":"PZSD2YU7I9K","text":""},{"from":"2BZKF428ZM","to":"LAC479Q228","text":""},{"from":"0001548872","to":"PZSD2YU7I9K","text":""},{"from":"AR4IQBABOI","to":"K562D9MNZF","text":""},{"from":"PZSD2YU7I9K","to":"UIO9BMJ34P0","text":""}];
 
